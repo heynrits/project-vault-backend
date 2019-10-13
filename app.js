@@ -15,10 +15,10 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, { useNewUrlParser: true })
 
 // Routers
 const users = require('./routers/users');
-// Server
-const app = express();
+const projects = require('./routers/projects');
 
 app.use('/api/users', users);
+app.use('/api/projects', projects);
 
 app.get('/', (req, res) => {
     res.json({
