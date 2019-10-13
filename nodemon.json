@@ -1,0 +1,7 @@
+{
+    "env": {
+        "PORT": 3000,
+        "MONGO_CONNECTION_STRING": "mongodb://localhost/project_vault",
+        "JWT_PRIVATE_KEY": "secretxyzpv"
+    }
+}
