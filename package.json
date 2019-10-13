@@ -1,0 +1,19 @@
+{
+  "name": "project-vault-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Project Vault app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heynrits/project-vault-backend.git"
+  },
+  "author": "John Heinrich Austria",
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/heynrits/project-vault-backend/issues"
+  },
+  "homepage": "https://github.com/heynrits/project-vault-backend#readme"
+}
