@@ -3,9 +3,21 @@ const bcrypt = require('bcrypt');
 
 const saltRounds = 10;
 
-const { User } = require('../models/User');
+const { User, generateToken, validate } = require('../models/User');
 
 const router = express.Router();
+
+router.post('/auth', async (req, res) => {
+    const user = await User.findOne({ username: req.body.username });
+    if (!user) return res.status(400).send('Invalid username or password');
+
+    const match = await bcrypt.compare(req.body.password, user.password);
+
+    if (!match) return res.status(400).json({ success: match, message: 'Invalid username or password' });
+
+    const authToken = generateToken();
+    res.json({ success: match, authToken });
+});
 
 router.post('/', (req, res) => {
     const { error } = validate(req.body);
