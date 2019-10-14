@@ -2,7 +2,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+
+function dateNow() {
+    return new Date(Date.now()).toLocaleString();
+}
 
 // Server
 const app = express();
@@ -10,8 +13,8 @@ app.use(bodyParser.json());
 
 // Database
 mongoose.connect(process.env.MONGO_CONNECTION_STRING, { useNewUrlParser: true })
-    .then(async () => console.log('Connected to MongoDB...'))
-    .catch((err) => console.error('Error connecting to MongoDB:', err));
+    .then(async () => console.log(`${dateNow()}: Connected to MongoDB...`))
+    .catch((err) => console.error(`${dateNow()}: Error connecting to MongoDB \n${err}`));
 
 // Routers
 const users = require('./routers/users');
@@ -27,4 +30,4 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.listen(PORT, () => console.log(`${dateNow()}: Server started on port ${PORT}`));
