@@ -1,11 +1,14 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
+
+const { verifyToken } = require('../middlewares/auth');
 
 const { Project, validate } = require('../models/Project');
 
 const router = express.Router();
 
 // CREATE one project
-router.post('/', (req, res) => {
+router.post('/', verifyToken, (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -14,7 +17,7 @@ router.post('/', (req, res) => {
         name: req.body.name,
         description: req.body.description,
         urls: req.body.urls,
-        creator: req.body.creator
+        creator: req.decoded.id // Made possible by verifyToken middleware
     };
 
     const project = new Project(data);
@@ -24,29 +27,29 @@ router.post('/', (req, res) => {
 });
 
 // UPDATE one project
-router.put('/:id', (req, res) => {
+router.put('/:id', verifyToken, (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     // Get request payload
     const data = {
-        id: req.body.id,
+        _id: req.params.id,
         name: req.body.name,
         description: req.body.description,
         urls: req.body.urls,
-        creator: req.body.creator
+        creator: req.decoded.id
     };
 
-    Project.findByIdAndUpdate(data.id, data, (err, updatedProject) => {
+    Project.findByIdAndUpdate(req.params.id, data, (err, updatedProject) => {
         if (err) return res.status(500).json({ success: false, error: err });
 
-        res.json({ success: true, updatedProject });
-    })
+        return res.json({ success: true, updatedProject });
+    });
 });
 
 // GET all projects
-router.get('/', (req, res) => {
-    Project.find({ creator: req.body.creator }, (error, projects) => {
+router.get('/', verifyToken, (req, res) => {
+    Project.find({ creator: req.decoded.id }, (error, projects) => {
         if (error) return res.status(500).json({ error });
 
         return res.json({ projects });
@@ -54,8 +57,8 @@ router.get('/', (req, res) => {
 });
 
 // GET one project
-router.get('/:id', (req, res) => {
-    Project.findOne({ _id: req.params.id }, (error, project) => {
+router.get('/:id', verifyToken, (req, res) => {
+    Project.findOne({ _id: req.params.id, creator: req.decoded.id }, (error, project) => {
         if (error) return res.status(500).json({ error });
 
         return res.json(project);
@@ -63,8 +66,8 @@ router.get('/:id', (req, res) => {
 });
 
 // DELETE one project
-router.delete('/:id', (req, res) => {
-    Project.deleteOne({ _id: req.params.id }, (error) => {
+router.delete('/:id', verifyToken, (req, res) => {
+    Project.deleteOne({ _id: req.params.id, creator: req.decoded.id }, (error) => {
         if (error) return res.status(500).json({ error });
 
         return res.json({ message: 'Project deleted.' });
