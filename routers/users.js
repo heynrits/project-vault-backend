@@ -15,7 +15,7 @@ router.post('/auth', async (req, res) => {
 
     if (!match) return res.status(400).json({ success: match, message: 'Invalid username or password' });
 
-    const authToken = generateToken();
+    const authToken = generateToken(user);
     res.json({ success: match, authToken });
 });
 
