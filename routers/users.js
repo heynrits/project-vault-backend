@@ -5,7 +5,19 @@ const saltRounds = 10;
 
 const { User, generateToken, validate } = require('../models/User');
 
+const { verifyToken } = require('../middlewares/auth');
+
 const router = express.Router();
+
+router.get('/:username', verifyToken, async (req, res) => {
+    if (req.params.username !== req.decoded.username) return res.sendStatus(403);
+
+    const user = await User.findOne({ username: req.params.username });
+    return res.json({
+        name: user.name,
+        username: user.username
+    });
+});
 
 router.post('/auth', async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
