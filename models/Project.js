@@ -5,13 +5,13 @@ const projectSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        maxlength: 50
+        maxlength: 50,
+        unique: true
     },
     description: {
         type: String,
         required: true,
-        maxlength: 300,
-        unique: true
+        maxlength: 300
     },
     urls: {
         feat_img: {
